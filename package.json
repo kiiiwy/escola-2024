@@ -1,0 +1,12 @@
+{
+  "name": "projeto202",
+  "version": "1.0.0",
+  "description": "Meu projeto estático para deploy no Render",
+  "main": "index1.html",
+  "scripts": {
+    "start": "serve -s ."
+  },
+  "dependencies": {
+    "serve": "^14.0.1"
+  }
+}

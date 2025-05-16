@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Projeto 202</title>
+  <style>
+    /* Reset padrão */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Loader styles */
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #833ab4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .spinner {
+      border: 8px solid rgba(255, 255, 255, 0.2);
+      border-top: 8px solid #fff;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      gap: 40px;
+      color: #fff;
+      background: linear-gradient(270deg, #833ab4, #fd1d1d, #fcb045, #833ab4);
+      background-size: 800% 800%;
+      animation: backgroundShift 30s ease infinite;
+    }
+
+    @keyframes backgroundShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes fadeSlideDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
+      animation: fadeSlideDown 1s ease forwards;
+    }
+
+    .card-container {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 1000px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      background: #222;
+      width: 300px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      position: relative;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      z-index: 1;
+    }
+
+    .card:hover,
+    .card:focus {
+      outline: none;
+      transform: translateY(-15px);
+      box-shadow: 0 25px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .card:hover img,
+    .card:focus img {
+      transform: scale(1.1);
+    }
+
+    .card-content {
+      padding: 20px;
+      background: linear-gradient(135deg, #833ab4, #fd1d1d);
+      border-radius: 0 0 20px 20px;
+      transition: background 0.4s ease;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card:hover .card-content,
+    .card:focus .card-content {
+      background: linear-gradient(135deg, #fcb045, #833ab4);
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .card-description {
+      font-size: 1rem;
+      line-height: 1.4;
+      opacity: 0.85;
+      margin-bottom: 20px;
+      max-height: 80px;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+
+    .btn-saiba-mais {
+      align-self: start;
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-weight: 600;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 30px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-size: 0.9rem;
+    }
+
+    .btn-saiba-mais:hover,
+    .btn-saiba-mais:focus {
+      background-color: #fff;
+      color: #833ab4;
+      box-shadow: 0 0 20px #833ab4;
+      outline: none;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      pointer-events: none;
+      opacity: 0;
+      box-shadow: 0 0 20px 7px #fd1d1d;
+      transition: opacity 0.4s ease;
+    }
+
+    .card:hover::before,
+    .card:focus::before {
+      opacity: 1;
+    }
+
+    /* ✅ CARD EXPANDIDO AJUSTADO */
+    .card.expanded {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 90vw;
+      max-width: 900px;
+      height: auto;
+      max-height: 90vh;
+      transform: translate(-50%, -50%);
+      z-index: 10000;
+      overflow-y: auto;
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+      background: #222;
+      cursor: default;
+    }
+
+    .card.expanded img {
+      height: 300px;
+      object-fit: cover;
+      transform: none !important;
+      border-radius: 20px 20px 0 0;
+    }
+
+    .card.expanded .card-content {
+      background: linear-gradient(135deg, #fcb045, #833ab4);
+      border-radius: 0 0 20px 20px;
+      padding: 30px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .card.expanded .card-description {
+      padding: 10px;
+      margin: 0;
+      max-height: none;
+      opacity: 1;
+      font-size: 1.1rem;
+      overflow: visible;
+    }
+
+    .card .btn-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.85);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #833ab4;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+      transition: all 0.3s ease;
+      user-select: none;
+      display: none;
+      z-index: 10001;
+    }
+
+    .card.expanded .btn-close {
+        .card.expanded::before {
+  display: none !important;
+}
+
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="loader">
+    <div class="spinner" aria-label="Carregando conteúdo..."></div>
+  </div>
+
+  <h1>Monumentos de Ponta de Pedras</h1>
+
+  <div class="card-container" role="list">
+    <div class="card" tabindex="0" role="listitem">
+      <img src="img/obelisco1.png" alt="Paisagem ilustrativa" />
+      <div class="card-content">
+        <h2 class="card-title">História do Obelisco</h2>
+        <p class="card-description">Obelisco Ponta – Pedrense
+O obelisco é um patrimônio histórico muito importante para a cidade de Ponta de Pedras, pois representa as reviravoltas políticas de uma época decisiva para a história do município. Há mais de 93 anos, ele é um símbolo de orgulho para todos na cidade. Hoje, vamos realizar uma análise detalhada dos aspectos históricos e culturais que tornam esse monumento tão importante.
+
+Origem do obelisco
+entendermos a complexidade e o simbolismo por trás desse monumento, vamos precisar fazer uma pequena viagem na história, la para o Egito Antigo. E eu vou mostrar a você, caro leitor, como a história das civilizações antigas da Grécia e do Egito se conecta com a história de Ponta de Pedras através desse monumento.
+A primeira coisa importante a entender é que o obelisco não é uma obra exclusiva de nossa cidade. Na verdade, ele já estava presente em diversas culturas ao redor do mundo há muito tempo.
+O obelisco, surgiu no Egito Antigo durante o Período Dinástico Inicial (cerca de 3150-2613 a.C.). Lá, ele carregava um significado muito especial: era uma homenagem e adoração a Rá, deus do sol na mitologia egípcia. O monumento também era símbolo de proteção e defesa no Antigo Egito. Os egípcios acreditavam que os obeliscos ajudavam a dissipar as energias negativas que se formavam sobre as cidades, seja em forma de tempestades ou de outros eventos catastróficos de origem natural.
+Posteriormente, os gregos também passaram a utilizar os obeliscos. especialmente após a conquista do Egito por Alexandre, o Grande, e o domínio da dinastia grega dos Ptolemeus.
+No entanto, a relação dos gregos com o obelisco era diferente da dos egípcios. Os gregos não usavam os obeliscos em rituais religiosos ou na arquitetura urbana, mas os tratavam como obras artísticas, peças que deveriam ser guardadas e preservadas, e que simbolizavam respeito e poder. Os gregos chegaram até mesmo a fazer gravuras e inscrições nos obeliscos.
+
+Contexto histórico
+Após tantas informações, você deve estar se perguntando por que um a obra arquitetônica tão antiga, originária de uma terra tão distante, foi construída no centro de Ponta de Pedras.
+Para responder a essa pergunta, precisamos nos aprofundar no contexto histórico de 1930, data de fundação deste monumento.
+Esse era um momento muito delicado na história brasileira, com a ascensão de Getúlio Vargas ao poder por meio de um mandato provisório, e fortes revoluções políticas acontecendo no país. É claro que Ponta de Pedras não poderia ficar de fora.
+O interventor do estado do Pará, Joaquim Magalhães Cardoso Barata, mudou o nome de Ponta de pedras para "Itaguary" e ordenou a transferência da sede municipal da cidade de Cachoeira do Arari para a cidade de Itaguary, elevando seu status de "vila" para "cidade".
+Para comemorar esse feito, o então prefeito municipal, Sr. Major Djalma da Costa Machado, decidiu construir o obelisco e convidou todos os ponta-pedrenses a pintarem as fachadas de suas casas de branco, para combinar com o monumento. Assim, ele concedeu à cidade o título de "Cidade Branca"
+Atualmente, nas placas presentes no obelisco, está escrito:
+
+"13 de maio de 1931 - Nesta data foi solenemente instalada a cidade de Itaguary, antiga vila de Ponta de Pedras, como sede da comarca e do município de Arary, sendo o interventor federal do Estado do Pará o Sr. Major J. de Magalhães Cardoso
+Barata e o prefeito municipal o Sr. Major Djalma Machado."
+
+
+"O povo de Itaguary, com o produto de uma subscrição pública, mandou levantar este monumento para significar a sua gratidão ao Sr. Major J, de Magalhães Cardoso Barata, interventor federal do Estado do Pará, e ao Major Djalma
+Machado, prefeito municipal de Arary. A estes ilustres cidadãos Itaguary tudo deve”
+
+Há também uma terceira placa, referente a uma reforma realizada no obelisco em 2024, mas falaremos disso mais adiante.
+
+
+   Relação com a maçonaria
+Uma curiosidade muito interessante sobre o obelisco é que ele também é um símbolo da maçonaria, representando ordem, sabedoria e legado.
+A escolha curiosa pela construção desse elemento em Ponta de Pedras não foi por acaso. Tanto o Major Magalhães Barata quanto o Major Djalma Machado eram membros da maçonaria e possuíam uma profunda admiração pelo significado e pela beleza arquitetônica do obelisco.
+Inclusive, o interventor Magalhães Barata mantinha uma boa relação com círculos maçônicos no Pará, e sua atuação política contou com o apoio de setores influentes ligados à maçonaria.
+
+
+Reforma
+A preservação da memória histórica de um povo também exige cuidado com seus patrimônios, com o obelisco não foi diferente.
+Com a reforma e ampliação da Praça Magalhães
+Barata, realizada pelo Governo do Pará e finalizada em dezembro de 2024, o obelisco também ganhou uma cara nova, recebendo melhorias nas placas, nova pintura e instalação de luzes para iluminação.
+
+Conclusão
+Olha que legal! Agora você sabe mais a respeito do obelisco e por que ele é um patrimônio tão valioso para nós, ponta-pedrenses. A história e a cultura do nosso município são lindas, não é mesmo?
+Não se esqueça de compartilhar com seus amigos e familiares as informações que você obteve aqui hoje, para que, assim, a nossa história seja preservada e transmitida às próximas gerações.</p>
+        <button class="btn-saiba-mais" type="button">Saiba mais</button>
+        <button class="btn-close" aria-label="Fechar card">×</button>
+      </div>
+    </div>
+
+    <div class="card" tabindex="0" role="listitem">
+      <img src="img/o caba la.png" alt="Paisagem com árvore e céu azul" />
+      <div class="card-content">
+        <h2 class="card-title">Quem Construiu?</h2>
+        <p class="card-description">Benedito Candido Cerdeira
+Benedito Candido Cerdeira foi um mestre de obras português, responsável por construir inúmeros prédios nos municípios de Ponta de Pedras e Cachoeira do Arari, entre eles o Obelisco. Nascido em Portugal, Benedito veio para Belém, onde conheceu uma moça natural de Ponta de Pedras. Com ela iniciou um relacionamento e, durante esse período, mudou-se para o município de Ponta de Pedras, onde deu início às suas grandes obras.
+Benedito Candido Cerdeira e sua esposa tiveram quatro filhos. Infelizmente, no nascimento do último filho, sua esposa faleceu. Após ficar viúvo, Benedito nunca mais se casou. Anos mais tarde, ele faleceu de causas naturais e foi sepultado no cemitério do município de Ponta de Pedras.
+</p>
+        <button class="btn-saiba-mais" type="button">Saiba mais</button>
+        <button class="btn-close" aria-label="Fechar card">×</button>
+      </div>
+    </div>
+
+    <div class="card" tabindex="0" role="listitem">
+      <img src="img/farol.png" alt="Cidade e luzes ao entardecer" />
+      <div class="card-content">
+        <h2 class="card-title">Farol</h2>
+        <p class="card-description">O Farol de Ponta de Pedras, conhecido como farol Itaguary,
+localizado na ilha de Marajó, no estado do Pará, tem importância
+histórica e estratégica para a navegação na região amazônica. Ele
+foi construído no século XX para orientar embarcações e a
+entrada do rio Marajó açu.
+Antigamente, O farol ajudava a guiar navios por entre os
+perigosos bancos de areia e correntes da costa marajoara,
+marcada por fortes marés e águas turvas. Hoje, o farol é
+considerado um ponto turístico local, além de manter sua função
+de orientação marítima. A paisagem ao redor, com praias
+extensas e manguezais, dá ao farol um ar simbólico de resistência
+e identidade regional.</p>
+        <button class="btn-saiba-mais" type="button">Saiba mais</button>
+        <button class="btn-close" aria-label="Fechar card">×</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('load', function () {
+      const loader = document.getElementById('loader');
+      loader.style.transition = 'opacity 0.5s ease';
+      loader.style.opacity = 0;
+      setTimeout(() => {
+        loader.style.display = 'none';
+      }, 500);
+    });
+
+    function openCard(card) {
+      card.classList.add('expanded');
+      document.body.style.overflow = 'hidden';
+      const closeBtn = card.querySelector('.btn-close');
+      closeBtn.focus();
+    }
+
+    function closeCard(card) {
+      card.classList.remove('expanded');
+      document.body.style.overflow = '';
+      const btnSaibaMais = card.querySelector('.btn-saiba-mais');
+      btnSaibaMais.focus();
+    }
+
+    document.querySelectorAll('.card').forEach(card => {
+      const btnSaibaMais = card.querySelector('.btn-saiba-mais');
+      const btnClose = card.querySelector('.btn-close');
+
+      btnSaibaMais.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openCard(card);
+      });
+
+      btnClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeCard(card);
+      });
+
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && card.classList.contains('expanded')) {
+          closeCard(card);
+        }
+      });
+
+      card.addEventListener('click', e => {
+        e.stopPropagation();
+      });
+    });
+
+    document.addEventListener('click', () => {
+      const expandedCard = document.querySelector('.card.expanded');
+      if (expandedCard) {
+        closeCard(expandedCard);
+      }
+    });
+  </script>
+</body>
+</html>
